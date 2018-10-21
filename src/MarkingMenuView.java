@@ -28,6 +28,8 @@ import java.awt.geom.Rectangle2D;
 import java.awt.event.*;
 import javax.swing.event.*;
 
+//import com.sun.org.glassfish.gmbal.ParameterNames;
+
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
@@ -40,14 +42,19 @@ import javax.swing.SwingUtilities;
 
 /* paint *******************************************************************/
 
-class Paint extends JFrame {
-	HashMap<Shape, Color> couleur_shapes = new HashMap<Shape, Color>();
-	Color couleur = Color.BLACK;
+class MarkingMenuView extends JFrame {
+	public static HashMap<Shape, Color> couleur_shapes = new HashMap<Shape, Color>();
+	public static Color couleur = Color.BLACK;
+	
+	//public static Tool tool;
+	public static JPanel panel;
+	public static Shape shape;
+	public static Point o;
 
-	class Tool extends AbstractAction
+	/*class Tool extends AbstractAction
 	           implements MouseInputListener {
-	   Point o;
-		Shape shape;
+	   //Point o;
+		//Shape shape;
 		public Tool(String name) { super(name); }
 		public void actionPerformed(ActionEvent e) {
 			System.out.println("using tool " + this);
@@ -104,19 +111,50 @@ class Paint extends JFrame {
 			}
 		}
 	};
+	*/
 	
 	
-	Tool tool;
-
-	JPanel panel;
 	
-	public Paint(String title) {
+	public MarkingMenuView(String title) {
 		super(title);
 		JLayeredPane lpanel = new JLayeredPane();
-		MarkingMenu m = new MarkingMenu(null, null);
+		MarkingMenuModel m = new MarkingMenuModel(null, null);
+		m.addComponent("pen");
+		m.addComponent("ellispe");
+		m.addComponent("rectangle");
+		m.addComponent("rectangle");
+		m.addComponent("rectangle");
+		m.addComponent("rectangle");
+		m.addComponent("rectangle");
+		m.addComponent("rectangle");
 
-		lpanel.addMouseListener(new ClicEventListener(m));
-		lpanel.addMouseMotionListener(new ClicEventListener(m));
+		
+
+
+		
+		
+		JPanel panel = new JPanel() {	
+			public void paintComponent(Graphics g) {
+				super.paintComponent(g);	
+				Graphics2D g2 = (Graphics2D)g;
+				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
+				                    RenderingHints.VALUE_ANTIALIAS_ON);
+		
+				g2.setColor(Color.WHITE);
+				g2.fillRect(0, 0, getWidth(), getHeight());
+				System.out.println(couleur);
+				g2.setColor(couleur);
+
+				for(Entry<Shape, Color> entry : couleur_shapes.entrySet()) {
+					g2.setColor(entry.getValue());
+					g2.draw(entry.getKey());
+				}
+			}
+		};
+		
+		MarkingMenuController c = new MarkingMenuController(m,panel);
+		lpanel.addMouseListener(c);
+		lpanel.addMouseMotionListener(c);
 		JButton rouge = new JButton("Rouge");
 		rouge.addActionListener(new ActionListener(){  
 			public void actionPerformed(ActionEvent e){  
@@ -143,41 +181,25 @@ class Paint extends JFrame {
 		//j.setOpaque(false);
 		//j.setLayout(new BoxLayout(j, BoxLayout.PAGE_AXIS));
 		//j.setBackground(Color.WHITE);
-		for(AbstractAction tool: tools) {
+		/*for(AbstractAction tool: tools) {
 			j.add(tool);
 		}
 		for(JButton button: buttons) {
 			j.add(button);
-		}
+		}*/
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setMinimumSize(new Dimension(800, 600));
 		//add(j,BorderLayout.NORTH);
-		JPanel panel = new JPanel() {	
-			public void paintComponent(Graphics g) {
-				super.paintComponent(g);	
-				Graphics2D g2 = (Graphics2D)g;
-				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
-				                    RenderingHints.VALUE_ANTIALIAS_ON);
 		
-				g2.setColor(Color.WHITE);
-				g2.fillRect(0, 0, getWidth(), getHeight());
-				System.out.println(couleur);
-				g2.setColor(couleur);
-
-				for(Entry<Shape, Color> entry : couleur_shapes.entrySet()) {
-					g2.setColor(entry.getValue());
-					g2.draw(entry.getKey());
-				}
-			}
-		};
 		
 		panel.setBounds(0, 0, this.getSize().width, this.getSize().height);
 		lpanel.add(panel, JLayeredPane.DEFAULT_LAYER);
 		//m.setBounds(0,0,0,0);
 		lpanel.add(m, JLayeredPane.PALETTE_LAYER);
+		//lpanel.add(j, JLayeredPane.POPUP_LAYER);
 		add(lpanel);
 		//add(m);
-		//add(j);
+		
 
 		
 
@@ -191,7 +213,7 @@ class Paint extends JFrame {
 	public static void main(String argv[]) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				Paint paint = new Paint("paint");
+				MarkingMenuView paint = new MarkingMenuView("paint");
 			}
 		});
 	}
