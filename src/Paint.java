@@ -12,11 +12,12 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Vector;
 
-import java.awt.BorderLayout;
+//import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.Point;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.RenderingHints;
@@ -28,8 +29,10 @@ import java.awt.event.*;
 import javax.swing.event.*;
 
 import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.AbstractAction;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
@@ -101,13 +104,7 @@ class Paint extends JFrame {
 			}
 		}
 	};
-		
-	/*rouge
-	rouge.addActionListener(new ActionListener(){  
-		 public void actionPerformed(ActionEvent e){  
-		            
-		         }  
-		     });  */
+	
 	
 	Tool tool;
 
@@ -115,7 +112,11 @@ class Paint extends JFrame {
 	
 	public Paint(String title) {
 		super(title);
-		
+		JLayeredPane lpanel = new JLayeredPane();
+		MarkingMenu m = new MarkingMenu(null, null);
+
+		lpanel.addMouseListener(new ClicEventListener(m));
+		lpanel.addMouseMotionListener(new ClicEventListener(m));
 		JButton rouge = new JButton("Rouge");
 		rouge.addActionListener(new ActionListener(){  
 			public void actionPerformed(ActionEvent e){  
@@ -134,17 +135,24 @@ class Paint extends JFrame {
 				rouge,
 				bleu
 		};
+		JLayeredPane p = new JLayeredPane();
+		JToolBar j = new JToolBar();
+		//j.setUI(new MarkingUI());
+		j.setSize(100, 100);
+		
+		//j.setOpaque(false);
+		//j.setLayout(new BoxLayout(j, BoxLayout.PAGE_AXIS));
+		//j.setBackground(Color.WHITE);
+		for(AbstractAction tool: tools) {
+			j.add(tool);
+		}
+		for(JButton button: buttons) {
+			j.add(button);
+		}
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setMinimumSize(new Dimension(800, 600));
-		add(new JToolBar() {{
-			for(AbstractAction tool: tools) {
-				add(tool);
-			}
-			for(JButton button: buttons) {
-				add(button);
-			}
-		}}, BorderLayout.NORTH);
-		add(panel = new JPanel() {	
+		//add(j,BorderLayout.NORTH);
+		JPanel panel = new JPanel() {	
 			public void paintComponent(Graphics g) {
 				super.paintComponent(g);	
 				Graphics2D g2 = (Graphics2D)g;
@@ -155,15 +163,23 @@ class Paint extends JFrame {
 				g2.fillRect(0, 0, getWidth(), getHeight());
 				System.out.println(couleur);
 				g2.setColor(couleur);
-				/*for(Shape shape, color: couleur_shapes) {
-					g2.draw(shape);
-				}*/
+
 				for(Entry<Shape, Color> entry : couleur_shapes.entrySet()) {
 					g2.setColor(entry.getValue());
 					g2.draw(entry.getKey());
 				}
 			}
-		});
+		};
+		
+		panel.setBounds(0, 0, this.getSize().width, this.getSize().height);
+		lpanel.add(panel, JLayeredPane.DEFAULT_LAYER);
+		//m.setBounds(0,0,0,0);
+		lpanel.add(m, JLayeredPane.PALETTE_LAYER);
+		add(lpanel);
+		//add(m);
+		//add(j);
+
+		
 
 		pack();
 		setVisible(true);
