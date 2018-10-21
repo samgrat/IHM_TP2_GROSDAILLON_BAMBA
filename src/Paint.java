@@ -113,8 +113,9 @@ class Paint extends JFrame {
 	public Paint(String title) {
 		super(title);
 		JLayeredPane lpanel = new JLayeredPane();
-		MarkingMenu m = new MarkingMenu(null, null);
-
+		
+		MarkingMenu m = new MarkingMenu("sdsds");
+		
 		lpanel.addMouseListener(new ClicEventListener(m));
 		lpanel.addMouseMotionListener(new ClicEventListener(m));
 		JButton rouge = new JButton("Rouge");
