@@ -118,15 +118,18 @@ class MarkingMenuView extends JFrame {
 	public MarkingMenuView(String title) {
 		super(title);
 		JLayeredPane lpanel = new JLayeredPane();
-		MarkingMenuModel m = new MarkingMenuModel(null, null);
-		m.addComponent("pen");
-		m.addComponent("ellispe");
-		m.addComponent("rectangle");
-		m.addComponent("rectangle");
-		m.addComponent("rectangle");
-		m.addComponent("rectangle");
-		m.addComponent("rectangle");
-		m.addComponent("rectangle");
+		Vector<Object> composants = new Vector<Object>();
+		
+		composants.add("pen");
+		composants.add("ellispe");
+		composants.add("rectangle");
+		composants.add("rectangle");
+		composants.add(Color.RED);
+		composants.add("rectangle");
+		composants.add("rectangle");
+		composants.add("rectangle");
+		MarkingMenuModel m = new MarkingMenuModel(null, null, composants);
+
 
 		
 

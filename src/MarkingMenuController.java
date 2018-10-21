@@ -54,7 +54,7 @@ public class MarkingMenuController implements MouseInputListener  {
 		//lorsque le bouton droit de la souris est relaché, on ferme le menu.
 		if (e.getButton() == MouseEvent.BUTTON3)
 		m.setBounds(e.getX(), e.getY(), 0, 0);
-		
+		m.unset_buton_selected();
 		MarkingMenuView.shape = null;
 		this.left_clic = false;
 		this.right_clic = false;

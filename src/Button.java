@@ -24,6 +24,14 @@ public class Button extends Rectangle {
 	int x_text;
 	int y_text;
 
+	public void setXY(int x, int y) {
+		super.x = x;
+		super.y = y;
+		this.x = x;
+		this.y = y;
+	}
+
+
 	public Button(String text, int x, int y) {
 		super(x,y, WIDTH, HEIGHT);
 		this.x = x;

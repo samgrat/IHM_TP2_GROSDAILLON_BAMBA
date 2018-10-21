@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.MouseInfo;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Line2D;
 import java.util.Vector;
 
 import javax.swing.JComponent;
@@ -12,13 +13,19 @@ public class MarkingMenuModel extends JComponent{
 	private String tool;
 	private Color color;
 	private Vector<Object> composants = new Vector<Object>();
+	private Vector<Button> liste_composants = new Vector<Button>();
+	private Button last_button_selected;
 	private int mouseX = -99999; //valeur de base non affectée.
 	private int mouseY = -99999;
 	
-	public MarkingMenuModel(String tool, Color color) {
+	public MarkingMenuModel(String tool, Color color, Vector<Object> composants) {
 		super();
 		this.tool = tool;
 		this.color = color;
+		this.composants = composants;
+		for (int i = 0; i<composants.size(); i++) {
+			this.liste_composants.addElement(new Button(composants.get(i).toString(),0,0));
+		}
 		//this.addMouseListener(new ClicEventListener());
 	}
 
@@ -38,7 +45,9 @@ public class MarkingMenuModel extends JComponent{
 		this.color = color;
 	}
 	
-	
+	public void unset_buton_selected() {
+		this.last_button_selected = null;
+	}
 	
 	public int getMouseX() {
 		return mouseX;
@@ -125,17 +134,34 @@ public class MarkingMenuModel extends JComponent{
 			(new Button(composants.get(6).toString(), 0, 50)).drawStringRect(g, true, Color.RED, Color.WHITE);
 
 		} else if (this.composants.size() == 8) {
-			(new Button(composants.get(0).toString(), 50, 0)).drawStringRect(g, true, Color.RED, Color.WHITE);
-			(new Button(composants.get(1).toString(), 150, 0)).drawStringRect(g, true, Color.RED, Color.WHITE);
-			(new Button(composants.get(2).toString(), 200, 50)).drawStringRect(g, true, Color.RED, Color.WHITE);
-			(new Button(composants.get(3).toString(), 200, 150)).drawStringRect(g, true, Color.RED, Color.WHITE);
-			(new Button(composants.get(4).toString(), 150, 200)).drawStringRect(g, true, Color.RED, Color.WHITE);
-			(new Button(composants.get(5).toString(), 50, 200)).drawStringRect(g, true, Color.RED, Color.WHITE);
-			(new Button(composants.get(6).toString(), 0, 150)).drawStringRect(g, true, Color.RED, Color.WHITE);
-			(new Button(composants.get(7).toString(), 0, 50)).drawStringRect(g, true, Color.RED, Color.WHITE);
+			this.liste_composants.get(0).setXY(50,0);
+			this.liste_composants.get(1).setXY(150,0);
+			this.liste_composants.get(2).setXY(200,50);
+			this.liste_composants.get(3).setXY(200,150);
+			this.liste_composants.get(4).setXY(150,200);
+			this.liste_composants.get(5).setXY(50,200);
+			this.liste_composants.get(6).setXY(0,150);
+			this.liste_composants.get(7).setXY(0,50);
 
+			for (int i = 0; i< liste_composants.size(); i++) {
+				Line2D l1 = new Line2D.Float(135, 115, this.getMouseX(), this.getMouseY());
+				if (l1.intersects(this.liste_composants.get(i)) || this.liste_composants.get(i).equals(this.last_button_selected)) {
+					this.liste_composants.get(i).drawStringRect(g, true, Color.GREEN, Color.WHITE);
+					this.last_button_selected = this.liste_composants.get(i);
+				} else {
+					this.liste_composants.get(i).drawStringRect(g, true, Color.RED, Color.WHITE);
 
-		}
+				}
+			}
+//			this.liste_composants.get(0).drawStringRect(g, true, Color.RED, Color.WHITE);
+//			this.liste_composants.get(1).drawStringRect(g, true, Color.RED, Color.WHITE);
+//			this.liste_composants.get(2).drawStringRect(g, true, Color.RED, Color.WHITE);
+//			this.liste_composants.get(3).drawStringRect(g, true, Color.RED, Color.WHITE);
+//			this.liste_composants.get(4).drawStringRect(g, true, Color.RED, Color.WHITE);
+//			this.liste_composants.get(5).drawStringRect(g, true, Color.RED, Color.WHITE);
+//			this.liste_composants.get(6).drawStringRect(g, true, Color.RED, Color.WHITE);
+//			this.liste_composants.get(7).drawStringRect(g, true, Color.RED, Color.WHITE);
+	}
 	
 
 		if (b.contains(this.getMouseX(),this.getMouseY())) {
