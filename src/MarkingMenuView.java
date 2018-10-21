@@ -121,20 +121,15 @@ class MarkingMenuView extends JFrame {
 		Vector<Object> composants = new Vector<Object>();
 		
 		composants.add("pen");
-		composants.add("ellispe");
+		composants.add("ellipse");
 		composants.add("rectangle");
-		composants.add("rectangle");
-		composants.add(Color.RED);
-		composants.add("rectangle");
-		composants.add("rectangle");
-		composants.add("rectangle");
-		MarkingMenuModel m = new MarkingMenuModel(null, null, composants);
-
-
+		composants.add("black");
+		composants.add("red");
+		composants.add("blue");
+		composants.add("yellow");
+		composants.add("green");
 		
-
-
-		
+		MarkingMenuModel m = new MarkingMenuModel("pen", Color.BLACK, composants);	
 		
 		JPanel panel = new JPanel() {	
 			public void paintComponent(Graphics g) {

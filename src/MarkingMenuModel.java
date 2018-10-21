@@ -1,8 +1,13 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.MouseInfo;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JComponent;
@@ -10,13 +15,17 @@ import javax.swing.event.MouseInputAdapter;
 import javax.swing.event.MouseInputListener;
 
 public class MarkingMenuModel extends JComponent{
-	private String tool;
-	private Color color;
+	// Liste des outils supportés par notre appli
+	private final List<String> TOOLS = Arrays.asList("rectangle", "ellipse", "pen");
+	
+	private String tool = "pen";
+	private Color color = Color.BLACK;
 	private Vector<Object> composants = new Vector<Object>();
 	private Vector<Button> liste_composants = new Vector<Button>();
 	private Button last_button_selected;
 	private int mouseX = -99999; //valeur de base non affectÃ©e.
 	private int mouseY = -99999;
+	private Point origine;
 	
 	public MarkingMenuModel(String tool, Color color, Vector<Object> composants) {
 		super();
@@ -29,6 +38,13 @@ public class MarkingMenuModel extends JComponent{
 		//this.addMouseListener(new ClicEventListener());
 	}
 
+	public void setO(Point o) {
+		this.origine = o;
+	}
+	public Point getO() {
+		return origine;
+	}
+	
 	public String getTool() {
 		return tool;
 	}
@@ -77,6 +93,9 @@ public class MarkingMenuModel extends JComponent{
 		this.getComposants().addElement(component);
 	}
 
+	public boolean isATool(String s) {
+		return TOOLS.contains(s);
+	}
 
 	@Override
 	public void paintComponent( Graphics g) {
@@ -144,13 +163,23 @@ public class MarkingMenuModel extends JComponent{
 			this.liste_composants.get(7).setXY(0,50);
 
 			for (int i = 0; i< liste_composants.size(); i++) {
+				Button composant = this.liste_composants.get(i);
+				String composantName = composant.getText();
 				Line2D l1 = new Line2D.Float(135, 115, this.getMouseX(), this.getMouseY());
-				if (l1.intersects(this.liste_composants.get(i)) || this.liste_composants.get(i).equals(this.last_button_selected)) {
-					this.liste_composants.get(i).drawStringRect(g, true, Color.GREEN, Color.WHITE);
-					this.last_button_selected = this.liste_composants.get(i);
+				
+				// Si notre ligne croise un boutton
+				if (l1.intersects(composant) || composant.equals(this.last_button_selected)) {
+					
+					//On change l'outil en même temps qu'un feedback visuel
+					if(isATool(composantName))
+						setTool(composantName);
+					else
+						setColor(stringToColor(composantName));
+						
+					composant.drawStringRect(g, true, Color.GREEN, Color.WHITE);
+					this.last_button_selected = composant;
 				} else {
-					this.liste_composants.get(i).drawStringRect(g, true, Color.RED, Color.WHITE);
-
+					composant.drawStringRect(g, true, Color.RED, Color.WHITE);
 				}
 			}
 //			this.liste_composants.get(0).drawStringRect(g, true, Color.RED, Color.WHITE);
@@ -176,6 +205,23 @@ public class MarkingMenuModel extends JComponent{
 		if (this.getMouseX() != -99999 && this.getMouseY() != -99999)
 		g.drawLine(135, 115, this.getMouseX(), this.getMouseY());
 		
+	}
+
+	/**
+	 * Essaie de traduire une string en couleur
+	 * @param composantName la string
+	 * @return color l'objet Color
+	 */
+	private Color stringToColor(String composantName) {
+		Color color;
+		try {
+		    Field field = Class.forName("java.awt.Color").getField(composantName);
+		    color = (Color)field.get(null);
+		} catch (Exception e) {
+		    color = Color.BLACK; 
+		    System.err.println("Outil non reconnu");
+		}
+		return color;
 	}
 	
 }

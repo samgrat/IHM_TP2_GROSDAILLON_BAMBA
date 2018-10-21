@@ -31,7 +31,6 @@ public class Button extends Rectangle {
 		this.y = y;
 	}
 
-
 	public Button(String text, int x, int y) {
 		super(x,y, WIDTH, HEIGHT);
 		this.x = x;
@@ -40,8 +39,10 @@ public class Button extends Rectangle {
 		this.height = HEIGHT;
 
 		this.text = text;
-
-		// addMouseListener(new ClicEventListener());
+	}
+	
+	public String getText() {
+		return text;
 	}
 
 	/**
@@ -70,18 +71,5 @@ public class Button extends Rectangle {
 		g.drawString(text, x_text, y_text);
 		g.setColor(old);
 	}
-
-	/*
-	 * private class ClicEventListener extends MouseInputAdapter {
-	 * 
-	 * public void mouseEntered(java.awt.event.MouseEvent evt) { // ACTIVATE
-	 * System.out.println("Bouton enclenché"); }
-	 */
-
-//	    public void mouseExited(java.awt.event.MouseEvent evt) {
-//	        
-//	    }
-
-//	}
 
 }
