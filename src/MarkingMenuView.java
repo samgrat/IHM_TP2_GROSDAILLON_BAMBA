@@ -119,15 +119,9 @@ class MarkingMenuView extends JFrame {
 		super(title);
 		JLayeredPane lpanel = new JLayeredPane();
 		Vector<Object> composants = new Vector<Object>();
-		
-		composants.add("pen");
-		composants.add("ellipse");
-		composants.add("rectangle");
-		composants.add("black");
-		composants.add("red");
-		composants.add("blue");
-		composants.add("yellow");
-		composants.add("green");
+		composants.add("Outils");
+		composants.add("Couleurs");
+
 		
 		MarkingMenuModel m = new MarkingMenuModel("pen", Color.BLACK, composants);	
 		
@@ -140,6 +134,9 @@ class MarkingMenuView extends JFrame {
 		
 				g2.setColor(Color.WHITE);
 				g2.fillRect(0, 0, getWidth(), getHeight());
+				g2.setColor(Color.BLACK);
+				g2.drawString("Outil : " + m.getTool(), 10, 20);
+				g2.drawString("Couleur : " + m.getNom_couleur(), 10, 40);
 				System.out.println(couleur);
 				g2.setColor(couleur);
 
