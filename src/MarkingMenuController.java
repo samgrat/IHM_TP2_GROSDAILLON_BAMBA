@@ -78,6 +78,7 @@ public class MarkingMenuController implements MouseInputListener {
 			m.setComposants(liste_outils);
 		}
 
+		m.setMenu(""); // on remet notre menu ‡ son etat initial
 		m.unset_buton_selected(); // plus aucun bouton n'est selectionn√© lors du relachement du bouton de la
 									// souris
 		MarkingMenuView.shape = null;
